@@ -24,18 +24,18 @@ const Users = () => {
 
   return (
     <div className="p-8">
-      <h2 className="text-2xl font-bold mb-4">User Management</h2>
-      <p className="mb-4">Total Users: {totalUserCount}</p>
+      <h2 className="text-3xl font-bold mb-4 text-center">User Management</h2>
+      <p className="text-lg mb-4 text-center">Total Users: {totalUserCount}</p>
       <ul>
-        {users.map((user) => (
+        {users?.map((user) => (
           <li
             key={user.id}
-            className="flex items-center justify-between py-2 border-b"
+            className="flex items-center justify-between py-4 border-b border-gray-200"
           >
-            <span>{user.name}</span>
+            <span className="text-lg">{user.name}</span>
             <button
               onClick={() => handleDisableUser(user.id)}
-              className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
+              className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition duration-300"
             >
               Disable
             </button>
