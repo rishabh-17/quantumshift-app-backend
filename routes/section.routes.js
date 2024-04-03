@@ -1,7 +1,8 @@
 const express = require("express");
-const { BlogController } = require("../controllers");
+const SectionController = require("../controllers/section.controller");
 const router = express.Router();
-const { AuthMiddleware } = require("../middleware");
+const AuthMiddleware = require("../middleware/auth");
+
 // const BlogController = require("../controllersr");
 
 //GET ALL POSTS

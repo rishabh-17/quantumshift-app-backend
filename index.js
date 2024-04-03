@@ -14,6 +14,7 @@ const connectDB = require("./models/connect.js");
 const BlogRoutes = require("./routes/blog.routes.js");
 const SectionRoutes = require("./routes/section.routes.js");
 const UserRoutes = require("./routes/user.routes.js");
+const PaymentRoute = require("./routes/payment.routes.js")
 
 const app = express();
 
@@ -25,6 +26,7 @@ app.use(express.json({ limit: "50mb" }));
 app.use("/api/v1/auth", UserRoutes);
 app.use("/api/v1/blog", BlogRoutes);
 app.use("/api/v1/section", SectionRoutes);
+app.use("/api/v1/payment", PaymentRoute);
 
 app.use("/", (req, res) => {
   console.log(req.url === "/");
