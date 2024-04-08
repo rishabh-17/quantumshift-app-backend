@@ -1,4 +1,4 @@
-const Blog = require("../db/models/Blog.js");
+const Blog = require("../models/Blog.js");
 const cloudinary = require("cloudinary").v2;
 
 cloudinary.config({

@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const User = require("../db/models/User");
+const User = require("../models/User");
 
 /* This code exports a middleware function that is used for authentication in an application. */
 module.exports = (req, res, next) => {

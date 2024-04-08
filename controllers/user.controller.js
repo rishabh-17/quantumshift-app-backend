@@ -1,4 +1,4 @@
-const User = require("../db/models/User");
+const User = require("../models/User");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
@@ -61,4 +61,8 @@ function getAccessToken(id, name, isPremiumUser) {
     { _id: id, name: name, isPremiumUser: isPremiumUser },
     "secretKey"
   );
+}
+
+exports.disableUser = async (req, res) => {
+  
 }

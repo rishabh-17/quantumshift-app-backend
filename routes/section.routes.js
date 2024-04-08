@@ -6,11 +6,11 @@ const AuthMiddleware = require("../middleware/auth");
 // const BlogController = require("../controllersr");
 
 //GET ALL POSTS
-router.get("/get", BlogController.getAll);
-router.get("/get/:id", BlogController.get);
+router.get("/get", SectionController.getAll);
+router.get("/get/:id", SectionController.get);
 
 //CREATE A POST
-router.post("/create", BlogController.create);
-router.delete("/delete/:id", BlogController.delete);
+router.post("/create", SectionController.create);
+router.delete("/delete/:id", SectionController.delete);
 
 module.exports = router;

@@ -15,3 +15,4 @@ exports.createPaymentIntent = async (req, res) => {
       customer: customer.id,
     });
   }
+
