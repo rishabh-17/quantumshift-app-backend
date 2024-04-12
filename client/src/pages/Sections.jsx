@@ -3,24 +3,43 @@ import "quill/dist/quill.snow.css";
 import ReactQuill from "react-quill";
 import axios from "axios";
 import ImageUploading from "react-images-uploading";
-import firebase from "firebase/app";
-import "firebase/storage";
+import * as firebase from "firebase/app";
+// import { storage } from "firebase/app";
+import { ref, uploadBytes, getStorage } from "firebase/storage"
+import 'firebase/storage';
+
+const firebaseConfig = {
+  apiKey: import.meta.env.VITE_API_KEY,
+  authDomain: import.meta.env.VITE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_APP_ID,
+};
+
+firebase.initializeApp(firebaseConfig);
 
 const CreateBlogPage = () => {
   const [sectionData, setSectionData] = useState({
     title: "",
   });
-  const [images, setImages] = useState([]);
-  const [audio, setAudios] = useState([]);
-  const [video, setVideos] = useState([]);
+  const [image, setImage] = useState([]);
+  const [audios, setAudios] = useState([]);
+  const [video, setVideo] = useState([]);
+  const storage = getStorage();
 
-  const firebaseConfig = {
-    apiKey: "import.meta.env.VITE_API_KEY",
-    authDomain: "import.meta.env.VITE_AUTH_DOMAIN",
-    projectId: "import.meta.env.VITE_PROJECT_ID",
-    storageBucket: "import.meta.env.VITE_STORAGE_BUCKET",
-    messagingSenderId: "import.meta.env.VITE_MESSAGING_SENDER_ID",
-    appId: "import.meta.env.VITE_APP_ID",
+
+
+  const handleUploadFiles = () =>{
+    if ( image && audios && video){
+      const imgref = ref(storage, `images/${image.filename}${new Date()}`)
+      uploadBytes(imgref, image).then(()=>{
+        alert('uploaded');
+      }).catch((err)=>{
+        console.log(err);
+        alert('error');
+      })
+    }
   };
 
   const handleChange = (e) => {
@@ -150,14 +169,23 @@ const CreateBlogPage = () => {
 
   const handleSave = async () => {
     firebase.initializeApp(firebaseConfig);
-    const files = e.target.files;
-    const uploadPromises = [];
-
-    for (let i = 0; i < files.length; i++) {
-      const file = files[i];
-      uploadPromises.push(uploadAudioFile(file));
+    const payload = {
+      thumbnail:'',
+      video:'',
+      audios:[],
+      title:''
     }
-
+    console.log(audios, image, video)
+    
+    const uploadPromises = [];
+    for (let i = 0; i < audios.length; i++) {
+      const file = audios[i];
+      uploadPromises.push(uploadFileToFirebase(file));
+    }
+    
+    uploadPromises.push(uploadFileToFirebase(image[0].data_url));
+    uploadPromises.push(uploadFileToFirebase(video));
+    console.log(uploadPromises)
     try {
       const downloadURLs = await Promise.all(uploadPromises);
       console.log("Upload completed:", downloadURLs);
@@ -168,15 +196,17 @@ const CreateBlogPage = () => {
 
   const onChange = (imageList, addUpdateIndex) => {
     console.log(imageList, addUpdateIndex);
-    setImages(imageList);
+    setImage(imageList);
   };
 
   const handleAudioUpload = (e) => {
     const files = e.target.files;
+    setAudios(files);
   };
 
   const handleVideoUpload = (e) => {
     const file = e.target.files[0];
+    setVideo(file);
   };
 
   return (
@@ -200,7 +230,7 @@ const CreateBlogPage = () => {
         <div className="my-8">
           <h2 className="font-bold mb-2">Upload Thumbnail</h2>
           <ImageUploading
-            value={images}
+            value={image}
             onChange={onChange}
             maxNumber={maxNumber}
             dataURLKey="data_url"
@@ -215,7 +245,7 @@ const CreateBlogPage = () => {
               dragProps,
             }) => (
               <div className="upload__image-wrapper border rounded-xl p-4">
-                {images.length === 0 ? (
+                {image.length === 0 ? (
                   <button
                     style={isDragging ? { color: "red" } : undefined}
                     onClick={onImageUpload}
@@ -319,7 +349,7 @@ const CreateBlogPage = () => {
         <button
           type="submit"
           className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-          onClick={handleSave}
+          onClick={handleUploadFiles}
         >
           Save
         </button>
