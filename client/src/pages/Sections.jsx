@@ -4,17 +4,17 @@ import ReactQuill from "react-quill";
 import axios from "axios";
 import ImageUploading from "react-images-uploading";
 import * as firebase from "firebase/app";
-// import { storage } from "firebase/app";
-import { ref, uploadBytes, getStorage } from "firebase/storage"
-import 'firebase/storage';
+import { ref, uploadBytes, getStorage, getDownloadURL } from "firebase/storage";
+import "firebase/storage";
 
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_API_KEY,
-  authDomain: import.meta.env.VITE_AUTH_DOMAIN,
-  projectId: import.meta.env.VITE_PROJECT_ID,
-  storageBucket: import.meta.env.VITE_STORAGE_BUCKET,
-  messagingSenderId: import.meta.env.VITE_MESSAGING_SENDER_ID,
-  appId: import.meta.env.VITE_APP_ID,
+  apiKey: "AIzaSyCS3OplXTOApyiGQnhizLbw_UQybFGkEBk",
+  authDomain: "quantum-shift-64a8a.firebaseapp.com",
+  projectId: "quantum-shift-64a8a",
+  storageBucket: "quantum-shift-64a8a.appspot.com",
+  messagingSenderId: "288104995290",
+  appId: "1:288104995290:web:28525cc1a5f6489f4908e3",
+  measurementId: "G-6NKJKW9Y5Z",
 };
 
 firebase.initializeApp(firebaseConfig);
@@ -28,17 +28,76 @@ const CreateBlogPage = () => {
   const [video, setVideo] = useState([]);
   const storage = getStorage();
 
+  const handleUploadFiles = () => {
+    const uploaded = {
+      audios: [],
+      image: "",
+      video: "",
+    };
+    if (image[0] && audios && video) {
+      const imageUploadPromise = new Promise((resolve, reject) => {
+        const imgref = ref(storage, `images/${image?.[0].file.name}`);
+        uploadBytes(imgref, image?.[0]?.file)
+          .then((i) => {
+            getDownloadURL(i.ref).then((url) => {
+              uploaded.image = url;
+              resolve(); // Resolve the promise when image upload is complete
+            });
+          })
+          .catch((err) => {
+            console.log(err);
+            reject(err); // Reject the promise if there's an error
+          });
+      });
 
+      const audioUploadPromises = Array.from(audios).map((audio) => {
+        return new Promise((resolve, reject) => {
+          const audref = ref(storage, `audios/${audio.name}`);
+          uploadBytes(audref, audio)
+            .then((i) => {
+              getDownloadURL(i.ref).then((url) => {
+                uploaded.audios.push(url);
+                resolve(); // Resolve the promise when audio upload is complete
+              });
+            })
+            .catch((err) => {
+              console.log(err);
+              reject(err); // Reject the promise if there's an error
+            });
+        });
+      });
 
-  const handleUploadFiles = () =>{
-    if ( image && audios && video){
-      const imgref = ref(storage, `images/${image.filename}${new Date()}`)
-      uploadBytes(imgref, image).then(()=>{
-        alert('uploaded');
-      }).catch((err)=>{
-        console.log(err);
-        alert('error');
-      })
+      const videoUploadPromise = new Promise((resolve, reject) => {
+        const vidref = ref(storage, `videos/${video?.name}`);
+        uploadBytes(vidref, video)
+          .then((i) => {
+            getDownloadURL(i.ref).then((url) => {
+              uploaded.video = url;
+              resolve(); // Resolve the promise when video upload is complete
+            });
+          })
+          .catch((err) => {
+            console.log(err);
+            reject(err); // Reject the promise if there's an error
+          });
+      });
+
+      // Combine all promises into one
+      Promise.all([
+        imageUploadPromise,
+        ...audioUploadPromises,
+        videoUploadPromise,
+      ])
+        .then(() => {
+          // All uploads are completed
+          // Now you can execute your API request
+          console.log("All uploads completed", uploaded);
+          // Execute your API request here
+        })
+        .catch((err) => {
+          console.log(err);
+          alert("Error uploading files");
+        });
     }
   };
 
@@ -170,22 +229,22 @@ const CreateBlogPage = () => {
   const handleSave = async () => {
     firebase.initializeApp(firebaseConfig);
     const payload = {
-      thumbnail:'',
-      video:'',
-      audios:[],
-      title:''
-    }
-    console.log(audios, image, video)
-    
+      thumbnail: "",
+      video: "",
+      audios: [],
+      title: "",
+    };
+    console.log(audios, image, video);
+
     const uploadPromises = [];
     for (let i = 0; i < audios.length; i++) {
       const file = audios[i];
       uploadPromises.push(uploadFileToFirebase(file));
     }
-    
+
     uploadPromises.push(uploadFileToFirebase(image[0].data_url));
     uploadPromises.push(uploadFileToFirebase(video));
-    console.log(uploadPromises)
+    console.log(uploadPromises);
     try {
       const downloadURLs = await Promise.all(uploadPromises);
       console.log("Upload completed:", downloadURLs);
