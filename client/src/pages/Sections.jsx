@@ -19,7 +19,7 @@ const firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 
-const CreateBlogPage = () => {
+const CreateSectionPage = () => {
   const [sectionData, setSectionData] = useState({
     title: "",
   });
@@ -269,11 +269,11 @@ const CreateBlogPage = () => {
   };
 
   return (
-    <div className="bg-gray-100 p-4 overflow-y-auto">
-      <h1 className="text-3xl font-bold mb-6 text-center">Create Blog</h1>
-      <form onSubmit={handleSubmit} className="max-w-xl mx-auto">
-        <div className="mb-8">
-          <label htmlFor="title" className="font-bold block mb-2">
+    <div className="bg-gray-100 p-4 w-[80%] mx-auto">
+          <h1 class="mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-black">Create <span class="text-blue-600 dark:text-blue-500">Section</span></h1>
+      <form onSubmit={handleSubmit} className="w-full mx-auto text-start">
+        <div className="mb-8 grid grid-cols-2 w-full">
+          <label htmlFor="title" className="font-bold block mb-2 mb-4 text-xl font-extrabold leading-none tracking-tight text-gray-900 md:text-xl lg:text-6xl dark:text-black">
             Title:
           </label>
           <input
@@ -282,7 +282,7 @@ const CreateBlogPage = () => {
             name="title"
             value={sectionData.title}
             onChange={handleChange}
-            className="border  bg-gray-100 border-gray-300 rounded p-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="border bg-gray-100 border-gray-300 rounded p-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500 w-[70%]"
           />
         </div>
 
@@ -417,4 +417,4 @@ const CreateBlogPage = () => {
   );
 };
 
-export default CreateBlogPage;
+export default CreateSectionPage;

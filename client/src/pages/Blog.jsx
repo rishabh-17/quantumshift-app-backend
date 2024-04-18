@@ -4,6 +4,23 @@ import ReactQuill from "react-quill";
 import axios from "axios";
 import ImageUploading from "react-images-uploading";
 
+import * as firebase from "firebase/app";
+import { ref, uploadBytes, getStorage, getDownloadURL } from "firebase/storage";
+import "firebase/storage";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCS3OplXTOApyiGQnhizLbw_UQybFGkEBk",
+  authDomain: "quantum-shift-64a8a.firebaseapp.com",
+  projectId: "quantum-shift-64a8a",
+  storageBucket: "quantum-shift-64a8a.appspot.com",
+  messagingSenderId: "288104995290",
+  appId: "1:288104995290:web:28525cc1a5f6489f4908e3",
+  measurementId: "G-6NKJKW9Y5Z",
+};
+
+firebase.initializeApp(firebaseConfig);
+
+
 const CreateBlogPage = () => {
   const [blogData, setBlogData] = useState({
     title: "",
@@ -11,6 +28,7 @@ const CreateBlogPage = () => {
     thumbnail: "",
   });
   const [images, setImages] = useState([]);
+  const storage = getStorage();
 
   const handleChange = (e) => {
     setBlogData({
@@ -102,24 +120,35 @@ const CreateBlogPage = () => {
   ];
 
   const handleProcedureContentChange = (content) => {
-    setContent(content);
+    setBlogData({...blogData, blog: content});
   };
 
   const handleSave = () => {
-    if (content && images?.[0]) {
-      axios
-        .post("/api/v1/blog/create", {
-          blog: content,
-          thumbnail: images?.[0],
-          title: title,
-          author: author,
-        })
-        .then(() => {
-          alert("Success");
-        })
-        .catch((err) => {
-          alert("Error: ");
-        });
+    console.log(blogData, images)
+    if (blogData && images?.[0]?.file) {
+    const imgref = ref(storage, `images/${image?.[0].file.name}`);
+        uploadBytes(imgref, images?.[0]?.file)
+          .then((i) => {
+            getDownloadURL(i.ref).then((url) => {
+              axios
+              .post("/api/v1/blog/create", {
+                ...blogData,
+                thumbnail: url,
+              })
+              .then(() => {
+                alert("Success");
+              })
+              .catch((err) => {
+                alert("Error: ");
+              });
+  
+            });
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+
+ 
     }
   };
 
