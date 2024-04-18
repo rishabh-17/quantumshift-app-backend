@@ -270,96 +270,108 @@ const CreateSectionPage = () => {
 
   return (
     <div className="bg-gray-100 p-4 w-[80%] mx-auto">
-          <h1 class="mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-black">Create <span class="text-blue-600 dark:text-blue-500">Section</span></h1>
-      <form onSubmit={handleSubmit} className="w-full mx-auto text-start">
-        <div className="mb-8 grid grid-cols-2 w-full">
-          <label htmlFor="title" className="font-bold block mb-2 mb-4 text-xl font-extrabold leading-none tracking-tight text-gray-900 md:text-xl lg:text-6xl dark:text-black">
-            Title:
-          </label>
-          <input
-            type="text"
-            id="title"
-            name="title"
-            value={sectionData.title}
-            onChange={handleChange}
-            className="border bg-gray-100 border-gray-300 rounded p-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500 w-[70%]"
-          />
-        </div>
-
-        <div className="my-8">
-          <h2 className="font-bold mb-2">Upload Thumbnail</h2>
-          <ImageUploading
-            value={image}
-            onChange={onChange}
-            maxNumber={maxNumber}
-            dataURLKey="data_url"
+      <h1 class="mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-black">
+        Create <span class="text-blue-600 dark:text-blue-500">Section</span>
+      </h1>
+      <form
+        onSubmit={handleSubmit}
+        className="w-full mx-auto text-start border p-4 rounded-xl"
+      >
+        <div className="mb-8 flex w-full gap-4">
+          <label
+            htmlFor="title"
+            className="font-bold block mb-2 mb-4 text-xl font-extrabold leading-none tracking-tight text-gray-900 md:text-xl lg:text-2xl dark:text-black w-[20%]"
           >
-            {({
-              imageList,
-              onImageUpload,
-              onImageRemoveAll,
-              onImageUpdate,
-              onImageRemove,
-              isDragging,
-              dragProps,
-            }) => (
-              <div className="upload__image-wrapper border rounded-xl p-4">
-                {image.length === 0 ? (
-                  <button
-                    style={isDragging ? { color: "red" } : undefined}
-                    onClick={onImageUpload}
-                    {...dragProps}
-                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                  >
-                    Click or Drop here
-                  </button>
-                ) : (
-                  <button
-                    onClick={onImageRemoveAll}
-                    className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
-                  >
-                    Remove Image
-                  </button>
-                )}
-                {imageList?.map((image, index) => (
-                  <div key={index} className="image-item grid gap-2">
-                    <img
-                      src={image["data_url"]}
-                      alt=""
-                      width="150"
-                      className="rounded"
-                    />
-                    <div className="image-item__btn-wrapper">
-                      <button
-                        onClick={() => onImageUpdate(index)}
-                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded"
-                      >
-                        Update
-                      </button>
-                      <button
-                        onClick={() => onImageRemove(index)}
-                        className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded"
-                      >
-                        Remove
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </ImageUploading>
+            Section Title:
+          </label>
+          <div className="w-full">
+            <input
+              type="text"
+              id="title"
+              name="title"
+              value={sectionData.title}
+              onChange={handleChange}
+              className="border bg-gray-100 border-gray-300 rounded p-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
+            />
+          </div>
         </div>
 
-        <div className="my-8">
-          <label className="block mb-2" for="file_input">
-            <h2 className="font-bold mb-2">Upload Video</h2>
-          </label>
-          <input
-            className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
-            id="file_input"
-            type="file"
-            onChange={handleVideoUpload}
-          />
+        <div className="grid grid-cols-2 gap-4">
+          <div className="my-8">
+            <h2 className="font-bold mb-2">Upload Thumbnail</h2>
+            <ImageUploading
+              value={image}
+              onChange={onChange}
+              maxNumber={maxNumber}
+              dataURLKey="data_url"
+            >
+              {({
+                imageList,
+                onImageUpload,
+                onImageRemoveAll,
+                onImageUpdate,
+                onImageRemove,
+                isDragging,
+                dragProps,
+              }) => (
+                <div className="upload__image-wrapper border rounded-xl p-4">
+                  {image.length === 0 ? (
+                    <p
+                      style={isDragging ? { color: "red" } : undefined}
+                      onClick={onImageUpload}
+                      {...dragProps}
+                      className="  text-gray-400 font-bold py-2 px-4 rounded"
+                    >
+                      Click or Drop <span className="text-blue-500">here</span>
+                    </p>
+                  ) : (
+                    <p
+                      onClick={onImageRemoveAll}
+                      className="text-gray-400   font-bold py-2 px-4 rounded"
+                    >
+                      Remove Image
+                    </p>
+                  )}
+                  {imageList?.map((image, index) => (
+                    <div key={index} className="image-item grid gap-2">
+                      <img
+                        src={image["data_url"]}
+                        alt=""
+                        width="150"
+                        className="rounded"
+                      />
+                      <div className="image-item__btn-wrapper">
+                        <button
+                          onClick={() => onImageUpdate(index)}
+                          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded"
+                        >
+                          Update
+                        </button>
+                        <button
+                          onClick={() => onImageRemove(index)}
+                          className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded"
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </ImageUploading>
+          </div>
+
+          <div className="my-8">
+            <label className="block mb-2" for="file_input">
+              <h2 className="font-bold mb-2">Upload Video</h2>
+            </label>
+            <input
+              className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
+              id="file_input"
+              type="file"
+              onChange={handleVideoUpload}
+            />
+          </div>
         </div>
 
         <div className="my-8">

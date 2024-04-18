@@ -1,42 +1,38 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const Login = () => {
+const Login = ({ setAdminAuth }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // POST request to login endpoint
-    const response = await axios.post(
-      (import.meta.env.VITE_BACKEND_URL || "") + "/api/v1/auth/login",
-      JSON.stringify({ email, password })
-    );
-
-    // Handle the response
-    const data = await response.json();
-    if (data.login) {
-      // Successful login, redirect the user to the home page
-      navigate("/");
-    } else {
-      // Error handling
-      alert("Invalid email or password");
+    if (email && password) {
+      if (
+        email === "admin@quantumshift.com" &&
+        password === "QuantumShiftAdmin@2024"
+      ) {
+        localStorage.setItem("adminAuth", true);
+        setAdminAuth(true);
+        navigate("/");
+      }
     }
   };
 
   return (
-    <div class="bg-gradient-to-br from-blue-400 to-purple-600 min-h-screen flex items-center justify-center">
-      <div class="max-w-md mx-auto px-6 py-8 bg-white rounded-lg shadow-lg">
+    <div class="bg-gradient-to-br from-blue-400 to-purple-600 min-h-screen flex items-center justify-center w-full">
+      <div class=" mx-auto px-6 py-8 bg-white rounded-lg shadow-lg w-[80%] md:w-[30%]">
         <h2 class="text-3xl font-bold text-center text-gray-800 mb-8">
-          Welcome Back!
+          Welcome <span class="text-blue-600 dark:text-blue-500">Back!</span>
         </h2>
-        <form class="space-y-4">
+        <form class="space-y-4 w-full" onSubmit={handleSubmit}>
           <div class="relative">
             <input
               type="email"
               placeholder="Email"
               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              onChange={(e) => setEmail(e.target.value)}
             />
             <svg
               class="absolute left-3 top-3 h-6 w-6 text-gray-400"
@@ -54,6 +50,7 @@ const Login = () => {
               type="password"
               placeholder="Password"
               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              onChange={(e) => setPassword(e.target.value)}
             />
             <svg
               class="absolute left-3 top-3 h-6 w-6 text-gray-400"
@@ -73,12 +70,6 @@ const Login = () => {
             Login
           </button>
         </form>
-        <p class="text-sm text-gray-600 mt-4 text-center">
-          Don't have an account?{" "}
-          <a href="#" class="text-blue-500 hover:underline">
-            Sign up
-          </a>
-        </p>
       </div>
     </div>
   );
