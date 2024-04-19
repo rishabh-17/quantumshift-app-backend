@@ -78,21 +78,20 @@ const CreateSectionPage = () => {
           })
           .catch((err) => {
             console.log(err);
-            reject(err); // Reject the promise if there's an error
+            reject(err); 
           });
       });
 
-      // Combine all promises into one
+
       Promise.all([
         imageUploadPromise,
         ...audioUploadPromises,
         videoUploadPromise,
       ])
         .then(() => {
-          // All uploads are completed
-          // Now you can execute your API request
+        
           console.log("All uploads completed", uploaded);
-          // Execute your API request here
+
         })
         .catch((err) => {
           console.log(err);
@@ -108,21 +107,6 @@ const CreateSectionPage = () => {
     });
   };
 
-  const uploadAudioToFirebase = (audioFile) => {
-    const storageRef = firebase.storage().ref();
-    const audioRef = storageRef.child(`audio/${audioFile.name}`);
-
-    return audioRef
-      .put(audioFile)
-      .then((snapshot) => {
-        console.log("Audio uploaded successfully");
-        return snapshot.ref.getDownloadURL();
-      })
-      .catch((error) => {
-        console.error("Error uploading audio:", error);
-        return null;
-      });
-  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -130,86 +114,6 @@ const CreateSectionPage = () => {
   };
 
   const maxNumber = 1;
-  let modules = {
-    toolbar: [
-      [{ size: ["small", false, "large", "huge"] }],
-      ["bold", "italic", "underline", "strike", "blockquote"],
-      [{ list: "ordered" }, { list: "bullet" }],
-      ["link", "image"],
-      [
-        { list: "ordered" },
-        { list: "bullet" },
-        { indent: "-1" },
-        { indent: "+1" },
-        { align: [] },
-      ],
-      [
-        {
-          color: [
-            "#000000",
-            "#e60000",
-            "#ff9900",
-            "#ffff00",
-            "#008a00",
-            "#0066cc",
-            "#9933ff",
-            "#ffffff",
-            "#facccc",
-            "#ffebcc",
-            "#ffffcc",
-            "#cce8cc",
-            "#cce0f5",
-            "#ebd6ff",
-            "#bbbbbb",
-            "#f06666",
-            "#ffc266",
-            "#ffff66",
-            "#66b966",
-            "#66a3e0",
-            "#c285ff",
-            "#888888",
-            "#a10000",
-            "#b26b00",
-            "#b2b200",
-            "#006100",
-            "#0047b2",
-            "#6b24b2",
-            "#444444",
-            "#5c0000",
-            "#663d00",
-            "#666600",
-            "#003700",
-            "#002966",
-            "#3d1466",
-            "custom-color",
-          ],
-        },
-      ],
-    ],
-  };
-
-  var formats = [
-    "header",
-    "height",
-    "bold",
-    "italic",
-    "underline",
-    "strike",
-    "blockquote",
-    "list",
-    "color",
-    "bullet",
-    "indent",
-    "link",
-    "image",
-    "align",
-    "size",
-  ];
-
-  const handleProcedureContentChange = (content) => {
-    setContent(content);
-  };
-
   const uploadFileToFirebase = async (file) => {
     try {
       const storageRef = firebase.storage().ref();
@@ -253,19 +157,25 @@ const CreateSectionPage = () => {
     }
   };
 
+
   const onChange = (imageList, addUpdateIndex) => {
-    console.log(imageList, addUpdateIndex);
     setImage(imageList);
   };
 
   const handleAudioUpload = (e) => {
     const files = e.target.files;
-    setAudios(files);
+    setAudios((prevAudios) => [...prevAudios, ...files]);
   };
 
   const handleVideoUpload = (e) => {
     const file = e.target.files[0];
     setVideo(file);
+  };
+
+  const removeAudio = (index) => {
+    setAudios((prevAudios) =>
+      prevAudios.filter((audio, i) => i !== index)
+    );
   };
 
   return (
@@ -415,6 +325,26 @@ const CreateSectionPage = () => {
                 onChange={handleAudioUpload}
               />
             </label>
+          </div>
+        </div>
+        <div className="my-8">
+          <label className="block mb-2">
+            <h2 className="font-bold mb-2">Uploaded Audio Files</h2>
+          </label>
+          <div className="items-center gap-2">
+            {audios.map((audio, index) => (
+              <div key={index} className="flex items-center">
+                <p>{index+1}.</p>
+                <p className="mr-2 ml-2">{audio.name}</p>
+                <button
+                  type="button"
+                  className=" text-white font-bold py-1 px-2 rounded"
+                  onClick={() => removeAudio(index)}
+                >
+                  <img src="https://static.vecteezy.com/system/resources/previews/018/887/460/original/signs-close-icon-png.png" alt="remove" width={20} />
+                </button>
+              </div>
+            ))}
           </div>
         </div>
         <button
